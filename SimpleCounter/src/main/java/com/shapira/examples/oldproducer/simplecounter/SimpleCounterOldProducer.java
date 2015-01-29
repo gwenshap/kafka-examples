@@ -72,7 +72,7 @@ public class SimpleCounterOldProducer {
     }
 
     /* create configuration for the producer */
-    public void configure(String brokerList, String sync) {
+    private void configure(String brokerList, String sync) {
         kafkaProps.put("metadata.broker.list", brokerList);
         kafkaProps.put("serializer.class", "kafka.serializer.StringEncoder");
         kafkaProps.put("request.required.acks", "1");
@@ -82,7 +82,7 @@ public class SimpleCounterOldProducer {
     }
 
     /* start the producer */
-    public void start() {
+    private void start() {
         producer = new Producer<String, String>(config);
     }
 
@@ -90,7 +90,7 @@ public class SimpleCounterOldProducer {
     *  because the key is null, data will be sent to a random partition.
     *  the producer will switch to a different random partition every 10 minutes
     **/
-    public void produce(String s) {
+    private void produce(String s) {
         KeyedMessage<String, String> message = new KeyedMessage<String, String>(topic, null, s);
         producer.send(message);
     }

@@ -1,2 +1,4 @@
 *.iml
-SimpleCounter/.idea/
+*.class
+**/.idea/
+**/target/
