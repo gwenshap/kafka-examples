@@ -71,8 +71,10 @@ public class SimpleCounterOldProducer {
         System.exit(0);
     }
 
-    /* create configuration for the producer */
+    /* create configuration for the producer
+    *  consult Kafka documentation for exact meaning of each configuration parameter */
     private void configure(String brokerList, String sync) {
+
         kafkaProps.put("metadata.broker.list", brokerList);
         kafkaProps.put("serializer.class", "kafka.serializer.StringEncoder");
         kafkaProps.put("request.required.acks", "1");
