@@ -18,12 +18,14 @@
 
 package com.shapira.examples.producer.simplecounter;
 
+import java.util.concurrent.ExecutionException;
+
 public class SimpleCounter {
 
     private static DemoProducer producer;
 
 
-    public static void main(String[] args) throws InterruptedException {
+    public static void main(String[] args) throws InterruptedException, ExecutionException {
 
         if (args.length == 0) {
             System.out.println("SimpleCounterOldProducer {broker-list} {topic} {type old/new} {type sync/async} {delay (ms)} {count}");

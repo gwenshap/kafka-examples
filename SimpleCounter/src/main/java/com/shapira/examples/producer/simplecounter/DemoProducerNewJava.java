@@ -42,7 +42,9 @@ public class DemoProducerNewJava implements DemoProducer {
         kafkaProps.put("key.serializer", "org.apache.kafka.common.serialization.StringSerializer");
         kafkaProps.put("value.serializer", "org.apache.kafka.common.serialization.StringSerializer");
         kafkaProps.put("acks", "1");
-        //kafkaProps.put("retries", "3");
+
+        // how many times to retry when produce request fails?
+        kafkaProps.put("retries", "3");
         kafkaProps.put("linger.ms", 5);
     }
 
