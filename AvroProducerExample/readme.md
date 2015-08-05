@@ -1,5 +1,8 @@
 This is a small example showing how to produce specific Avro classes to Kafka
-Using Confluent's Schema Repository and Avro Serializers
+Using Confluent's Schema Repository and Avro Serializers.
+
+Specific Avro classes mean that we use Avro's code generation to generate the LogLine class, then populate it and produce to Kafka.
+There is also an example using generic Avro, without code generation: https://github.com/confluentinc/examples
 
 To build this producer:
 
@@ -21,6 +24,10 @@ started with the default settings.
 
     # Start Schema Registry
     $ bin/schema-registry-start config/schema-registry.properties
+    
+If you don't already have a schema registry, you will need to install it.
+Either from packages: http://www.confluent.io/developer
+Or from source: https://github.com/confluentinc/schema-registry
     
 Then create a topic called clicks:
 
