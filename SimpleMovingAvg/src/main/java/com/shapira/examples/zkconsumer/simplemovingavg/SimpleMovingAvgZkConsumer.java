@@ -108,7 +108,6 @@ public class SimpleMovingAvgZkConsumer {
 
     private void start(String topic) {
         consumer = Consumer.createJavaConsumerConnector(config);
-
         /* We tell Kafka how many threads will read each topic. We have one topic and one thread */
         Map<String, Integer> topicCountMap = new HashMap<String, Integer>();
         topicCountMap.put(topic,new Integer(1));
