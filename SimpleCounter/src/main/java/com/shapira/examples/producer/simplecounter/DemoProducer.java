@@ -25,17 +25,17 @@ public interface DemoProducer {
      * create configuration for the producer
      * consult Kafka documentation for exact meaning of each configuration parameter
      */
-    public void configure(String brokerList, String sync);
+    void configure(String brokerList, String sync);
 
     /* start the producer */
-    public void start();
+    void start();
 
     /**
      * create record and send to Kafka
      * because the key is null, data will be sent to a random partition.
      * exact behavior will be different depending on producer implementation
      */
-    public void produce(String s) throws ExecutionException, InterruptedException;
+    void produce(String s) throws ExecutionException, InterruptedException;
 
-    public void close();
+    void close();
 }
