@@ -56,7 +56,7 @@ public class StreamingAvg {
 
         KTable<Windowed<String>, AvgValue> tempTable = stream.<AvgValue, SlidingWindow>aggregateByKey(
                 () -> new AvgAggregator<String, Integer, AvgValue>(),
-                SlidingWindows.of("avgWindow").with(10),
+                SlidingWindows.of("avgWindow").with(10000),
                 new StringSerializer(), new AvgValueSerializer(),
                 new StringDeserializer(), new AvgValueDeserializer());
 
