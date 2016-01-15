@@ -28,7 +28,7 @@ public class SimpleCounter {
     public static void main(String[] args) throws InterruptedException, ExecutionException {
 
         if (args.length == 0) {
-            System.out.println("SimpleCounterOldProducer {broker-list} {topic} {type old/new} {type sync/async} {delay (ms)} {count}");
+            System.out.println("SimpleCounter {broker-list} {topic} {type old/new} {type sync/async} {delay (ms)} {count}");
             return;
         }
 
@@ -44,8 +44,10 @@ public class SimpleCounter {
             producer = new DemoProducerOld(topic);
         else if (age.equals("new"))
             producer = new DemoProducerNewJava(topic);
-        else
+        else {
             System.out.println("Third argument should be old or new, got " + age);
+            System.exit(-1);
+        }
 
         /* start a producer */
         producer.configure(brokerList, sync);
