@@ -17,6 +17,8 @@ package com.shapira.examples.kstreamavg;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import org.apache.avro.generic.GenericData;
+import org.apache.avro.generic.GenericRecord;
 import org.apache.kafka.common.serialization.IntegerDeserializer;
 import org.apache.kafka.common.serialization.IntegerSerializer;
 import org.apache.kafka.streams.KafkaStreaming;
@@ -25,6 +27,7 @@ import org.apache.kafka.streams.examples.WallclockTimestampExtractor;
 import org.apache.kafka.streams.kstream.KStream;
 import org.apache.kafka.streams.kstream.KStreamBuilder;
 import org.apache.kafka.streams.kstream.KTable;
+import org.apache.kafka.streams.kstream.KeyValue;
 import org.apache.kafka.streams.kstream.SlidingWindows;
 import org.apache.kafka.streams.kstream.Windowed;
 import org.apache.kafka.streams.kstream.internals.SlidingWindow;
@@ -51,19 +54,27 @@ public class StreamingAvg {
 
         KStreamBuilder builder = new KStreamBuilder();
 
-        KStream<String, Integer> stream = builder.stream("ks_number_source");
+        KStream<String, Integer> prices = builder.stream("ks_prices");
+
+        KTable<String, String> names = builder.table("ks_names");
+
+        KStream<String, Integer> namedPrices = prices.leftJoin(names, (price, name) -> {
+            return new NamedPrice(name, price);
+        }).map((ticket, namedPrice) -> new KeyValue<String, Integer>(namedPrice.name, namedPrice.price));
 
 
-        KTable<Windowed<String>, AvgValue> tempTable = stream.<AvgValue, SlidingWindow>aggregateByKey(
+
+        KTable<Windowed<String>, AvgValue> tempTable = namedPrices.<AvgValue, SlidingWindow>aggregateByKey(
                 () -> new AvgAggregator<String, Integer, AvgValue>(),
                 SlidingWindows.of("avgWindow").with(10000),
                 new StringSerializer(), new AvgValueSerializer(),
                 new StringDeserializer(), new AvgValueDeserializer());
 
         // Should work after we implement "aggregateByKey
-        KTable<Windowed<String>, Double> results = tempTable.<Double>mapValues((v) -> ((double) v.sum / v.count));
+        KTable<Windowed<String>, Double> avg = tempTable.<Double>mapValues((v) -> ((double) v.sum / v.count));
 
-        results.to("ks_avg");
+        avg.to("ks_avg_prices");
+
 
         KafkaStreaming kstream = new KafkaStreaming(builder, config);
         kstream.start();

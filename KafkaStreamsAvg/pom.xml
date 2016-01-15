@@ -11,6 +11,7 @@
 
     <properties>
         <kafka.version>0.9.1.0-SNAPSHOT</kafka.version>
+        <avro.version>1.7.7</avro.version>
     </properties>
 
     <dependencies>
@@ -23,6 +24,11 @@
             <groupId>org.apache.kafka</groupId>
             <artifactId>kafka-streams</artifactId>
             <version>${kafka.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.avro</groupId>
+            <artifactId>avro</artifactId>
+            <version>${avro.version}</version>
         </dependency>
     </dependencies>
 
