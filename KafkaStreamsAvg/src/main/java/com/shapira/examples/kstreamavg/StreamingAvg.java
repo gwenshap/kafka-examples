@@ -28,9 +28,9 @@ import org.apache.kafka.streams.kstream.KStream;
 import org.apache.kafka.streams.kstream.KStreamBuilder;
 import org.apache.kafka.streams.kstream.KTable;
 import org.apache.kafka.streams.kstream.KeyValue;
-import org.apache.kafka.streams.kstream.SlidingWindows;
+import org.apache.kafka.streams.kstream.TumblingWindows;
 import org.apache.kafka.streams.kstream.Windowed;
-import org.apache.kafka.streams.kstream.internals.SlidingWindow;
+import org.apache.kafka.streams.kstream.internals.TumblingWindow;
 import org.apache.log4j.Logger;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.apache.kafka.common.serialization.StringSerializer;
@@ -64,9 +64,9 @@ public class StreamingAvg {
 
 
 
-        KTable<Windowed<String>, AvgValue> tempTable = namedPrices.<AvgValue, SlidingWindow>aggregateByKey(
+        KTable<Windowed<String>, AvgValue> tempTable = namedPrices.<AvgValue, TumblingWindow>aggregateByKey(
                 () -> new AvgAggregator<String, Integer, AvgValue>(),
-                SlidingWindows.of("avgWindow").with(10000),
+                TumblingWindows.of("avgWindow").with(10000),
                 new StringSerializer(), new AvgValueSerializer(),
                 new StringDeserializer(), new AvgValueDeserializer());
 
