@@ -1,14 +1,7 @@
 package com.shapira.examples.consumer.avroclicks;
 
 import JavaSessionize.avro.LogLine;
-import io.confluent.kafka.serializers.KafkaAvroDecoder;
 
-import kafka.javaapi.consumer.ConsumerConnector;
-import kafka.message.MessageAndMetadata;
-import kafka.serializer.StringDecoder;
-import kafka.utils.VerifiableProperties;
-import org.apache.avro.generic.GenericRecord;
-import org.apache.avro.specific.SpecificData;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.clients.consumer.*;
@@ -27,7 +20,7 @@ public class AvroClicksSessionizer {
     private Map<String, SessionState> state = new HashMap<String, SessionState>();
 
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws ExecutionException, InterruptedException {
 
         // currently hardcoding a lot of parameters, for simplicity
         String groupId = "AvroClicksSessionizer";
