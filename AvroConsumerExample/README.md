@@ -41,7 +41,7 @@ Then create a topic called sessions:
       --partitions 1 --topic sessions
       
 
-Then run the producer to produce 100 clicks:
+Then run the consumer to enrich the clicks with session information:
 
     $ java -cp target/uber-ClickSessionizer-1.0-SNAPSHOT.jar com.shapira.examples.consumer.avroclicks.AvroClicksSessionizer http://localhost:8081
     
