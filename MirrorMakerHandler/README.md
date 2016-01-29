@@ -12,5 +12,4 @@ Using a MessageHandler in MirrorMaker
 * Test it with a producer on source topic and consumer on destination:
 
     bin/kafka-console-producer.sh --topic mm1 --broker-list localhost:9092
-
     bin/kafka-console-consumer.sh --topic dc1.mm1 --zookeeper localhost:2181 --from-beginning
