@@ -37,12 +37,12 @@ public class DemoProducerOld implements DemoProducer{
 
     @Override
     public void configure(String brokerList, String sync) {
-        kafkaProps.put("metadata.broker.list", brokerList);
-        kafkaProps.put("serializer.class", "kafka.serializer.StringEncoder");
-        kafkaProps.put("request.required.acks", "1");
-        kafkaProps.put("producer.type", sync);
-        kafkaProps.put("send.buffer.bytes","550000");
-        kafkaProps.put("receive.buffer.bytes","550000");
+        kafkaProps.setProperty("metadata.broker.list", brokerList);
+        kafkaProps.setProperty("serializer.class", "kafka.serializer.StringEncoder");
+        kafkaProps.setProperty("request.required.acks", "1");
+        kafkaProps.setProperty("producer.type", sync);
+        kafkaProps.setProperty("send.buffer.bytes","550000");
+        kafkaProps.setProperty("receive.buffer.bytes","550000");
 
         config = new ProducerConfig(kafkaProps);
     }

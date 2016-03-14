@@ -47,14 +47,14 @@ public class AvroClicksSessionizer {
 
     private Properties createConsumerConfig(String brokers, String groupId, String url) {
         Properties props = new Properties();
-        props.put("bootstrap.servers", brokers);
-        props.put("group.id", groupId);
-        props.put("auto.commit.enable", "false");
-        props.put("auto.offset.reset", "earliest");
-        props.put("schema.registry.url", url);
-        props.put("specific.avro.reader", true);
-        props.put("key.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
-        props.put("value.deserializer", "io.confluent.kafka.serializers.KafkaAvroDeserializer");
+        props.setProperty("bootstrap.servers", brokers);
+        props.setProperty("group.id", groupId);
+        props.setProperty("auto.commit.enable", "false");
+        props.setProperty("auto.offset.reset", "earliest");
+        props.setProperty("schema.registry.url", url);
+        props.setProperty("specific.avro.reader", true);
+        props.setProperty("key.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
+        props.setProperty("value.deserializer", "io.confluent.kafka.serializers.KafkaAvroDeserializer");
 
         return props;
     }
@@ -98,12 +98,12 @@ public class AvroClicksSessionizer {
     private KafkaProducer<String, LogLine> getProducer(String topic, String url) {
         Properties props = new Properties();
         // hardcoding the Kafka server URI for this example
-        props.put("bootstrap.servers", "localhost:9092");
-        props.put("acks", "all");
-        props.put("retries", 0);
-        props.put("key.serializer", "io.confluent.kafka.serializers.KafkaAvroSerializer");
-        props.put("value.serializer", "io.confluent.kafka.serializers.KafkaAvroSerializer");
-        props.put("schema.registry.url", url);
+        props.setProperty("bootstrap.servers", "localhost:9092");
+        props.setProperty("acks", "all");
+        props.setProperty("retries", 0);
+        props.setProperty("key.serializer", "io.confluent.kafka.serializers.KafkaAvroSerializer");
+        props.setProperty("value.serializer", "io.confluent.kafka.serializers.KafkaAvroSerializer");
+        props.setProperty("schema.registry.url", url);
 
         KafkaProducer<String, LogLine> producer = new KafkaProducer<String, LogLine>(props);
         return producer;

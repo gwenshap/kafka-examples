@@ -43,13 +43,13 @@ public class StreamingAvg {
     public static void main(String[] args) throws Exception {
         Properties props = new Properties();
 
-        props.put(StreamingConfig.JOB_ID_CONFIG, "moving-avg-example");
-        props.put(StreamingConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
-        props.put(StreamingConfig.KEY_SERIALIZER_CLASS_CONFIG, IntegerSerializer.class);
-        props.put(StreamingConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
-        props.put(StreamingConfig.KEY_DESERIALIZER_CLASS_CONFIG, IntegerDeserializer.class);
-        props.put(StreamingConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
-        props.put(StreamingConfig.TIMESTAMP_EXTRACTOR_CLASS_CONFIG, WallclockTimestampExtractor.class);
+        props.setProperty(StreamingConfig.JOB_ID_CONFIG, "moving-avg-example");
+        props.setProperty(StreamingConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
+        props.setProperty(StreamingConfig.KEY_SERIALIZER_CLASS_CONFIG, IntegerSerializer.class);
+        props.setProperty(StreamingConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
+        props.setProperty(StreamingConfig.KEY_DESERIALIZER_CLASS_CONFIG, IntegerDeserializer.class);
+        props.setProperty(StreamingConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
+        props.setProperty(StreamingConfig.TIMESTAMP_EXTRACTOR_CLASS_CONFIG, WallclockTimestampExtractor.class);
         StreamingConfig config = new StreamingConfig(props);
 
         KStreamBuilder builder = new KStreamBuilder();

@@ -86,11 +86,11 @@ public class SimpleMovingAvgNewConsumer {
     }
 
     private void configure(String servers, String groupId) {
-        kafkaProps.put("group.id",groupId);
-        kafkaProps.put("bootstrap.servers",servers);
-        kafkaProps.put("auto.offset.reset","earliest");         // when in doubt, read everything
-        kafkaProps.put("key.deserializer","org.apache.kafka.common.serialization.StringDeserializer");
-        kafkaProps.put("value.deserializer","org.apache.kafka.common.serialization.StringDeserializer");
+        kafkaProps.setProperty("group.id",groupId);
+        kafkaProps.setProperty("bootstrap.servers",servers);
+        kafkaProps.setProperty("auto.offset.reset","earliest");         // when in doubt, read everything
+        kafkaProps.setProperty("key.deserializer","org.apache.kafka.common.serialization.StringDeserializer");
+        kafkaProps.setProperty("value.deserializer","org.apache.kafka.common.serialization.StringDeserializer");
         consumer = new KafkaConsumer<String, String>(kafkaProps);
     }
 
