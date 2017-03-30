@@ -36,16 +36,16 @@ public class DemoProducerNewJava implements DemoProducer {
     @Override
     public void configure(String brokerList, String sync) {
         this.sync = sync;
-        kafkaProps.put("bootstrap.servers", brokerList);
+        kafkaProps.setProperty("bootstrap.servers", brokerList);
 
         // This is mandatory, even though we don't send keys
-        kafkaProps.put("key.serializer", "org.apache.kafka.common.serialization.StringSerializer");
-        kafkaProps.put("value.serializer", "org.apache.kafka.common.serialization.StringSerializer");
-        kafkaProps.put("acks", "1");
+        kafkaProps.setProperty("key.serializer", "org.apache.kafka.common.serialization.StringSerializer");
+        kafkaProps.setProperty("value.serializer", "org.apache.kafka.common.serialization.StringSerializer");
+        kafkaProps.setProperty("acks", "1");
 
         // how many times to retry when produce request fails?
-        kafkaProps.put("retries", "3");
-        kafkaProps.put("linger.ms", 5);
+        kafkaProps.setProperty("retries", "3");
+        kafkaProps.setProperty("linger.ms", "5");
     }
 
     @Override

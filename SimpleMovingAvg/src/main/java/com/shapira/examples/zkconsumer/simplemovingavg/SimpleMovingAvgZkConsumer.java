@@ -92,16 +92,16 @@ public class SimpleMovingAvgZkConsumer {
     }
 
     private void configure(String zkUrl, String groupId) {
-        kafkaProps.put("zookeeper.connect", zkUrl);
-        kafkaProps.put("group.id",groupId);
-        kafkaProps.put("auto.commit.interval.ms","1000");
-        kafkaProps.put("auto.offset.reset","largest");
+        kafkaProps.setProperty("zookeeper.connect", zkUrl);
+        kafkaProps.setProperty("group.id",groupId);
+        kafkaProps.setProperty("auto.commit.interval.ms","1000");
+        kafkaProps.setProperty("auto.offset.reset","largest");
 
         // un-comment this if you want to commit offsets manually
-        //kafkaProps.put("auto.commit.enable","false");
+        //kafkaProps.setProperty("auto.commit.enable","false");
 
         // un-comment this if you don't want to wait for data indefinitely
-        kafkaProps.put("consumer.timeout.ms",waitTime);
+        kafkaProps.setProperty("consumer.timeout.ms",waitTime);
 
         config = new ConsumerConfig(kafkaProps);
     }

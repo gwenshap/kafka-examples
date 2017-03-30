@@ -21,12 +21,12 @@ public class AvroClicksProducer {
 
         Properties props = new Properties();
         // hardcoding the Kafka server URI for this example
-        props.put("bootstrap.servers", "localhost:9092");
-        props.put("acks", "all");
-        props.put("retries", 0);
-        props.put("key.serializer", "io.confluent.kafka.serializers.KafkaAvroSerializer");
-        props.put("value.serializer", "io.confluent.kafka.serializers.KafkaAvroSerializer");
-        props.put("schema.registry.url", schemaUrl);
+        props.setProperty("bootstrap.servers", "localhost:9092");
+        props.setProperty("acks", "all");
+        props.setProperty("retries", 0);
+        props.setProperty("key.serializer", "io.confluent.kafka.serializers.KafkaAvroSerializer");
+        props.setProperty("value.serializer", "io.confluent.kafka.serializers.KafkaAvroSerializer");
+        props.setProperty("schema.registry.url", schemaUrl);
         // Hard coding topic too.
         String topic = "clicks";
 
