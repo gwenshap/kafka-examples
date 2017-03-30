@@ -7,10 +7,15 @@ import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerRecord;
 
 import JavaSessionize.avro.LogLine;
+import java.util.Properties;
+import java.util.Random;
+import java.util.concurrent.ExecutionException;
 
 public class AvroClicksProducer {
 
-    public static void main(String[] args) {
+	static boolean verbose = Boolean.getBoolean("log.verbose");
+
+    public static void main(String[] args) throws ExecutionException, InterruptedException {
         if (args.length != 2) {
             System.out.println("Please provide command line arguments: numEvents schemaRegistryUrl");
             System.exit(-1);
@@ -37,14 +42,19 @@ public class AvroClicksProducer {
 //      Random rnd = new Random();
         for (long nEvents = 0; nEvents < events; nEvents++) {
             LogLine event = EventGenerator.getNext();
-            
-            System.out.print("/* >> " + nEvents + " >> */ ");
+
+			if (verbose) {
+				System.out.print("/* >> " + nEvents + " >> */ ");
+			}
 
             // Using IP as key, so events from same IP will go to same partition
             ProducerRecord<String, LogLine> record = new ProducerRecord<String, LogLine>(topic, event.getIp().toString(), event);
-            producer.send(record);
-            
-            System.out.println(event.toString());
+            producer.send(record).get();
+
+			if (verbose) {
+				System.out.println(event.toString());
+			}
+
         }
         producer.close();
 
