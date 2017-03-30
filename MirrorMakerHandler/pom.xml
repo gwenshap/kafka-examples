@@ -6,7 +6,6 @@
 
     <groupId>com.shapira.examples.kafka.MirrorMakerExample</groupId>
     <artifactId>TopicSwitchingHandler</artifactId>
-    <version>1.0-SNAPSHOT</version>
 
     <parent>
         <artifactId>kafka-examples-parent</artifactId>

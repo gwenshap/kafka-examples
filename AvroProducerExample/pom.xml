@@ -6,7 +6,6 @@
 
     <groupId>com.shapira.examples.kafka.AvroProducerExample</groupId>
     <artifactId>ClickstreamGenerator</artifactId>
-    <version>1.0-SNAPSHOT</version>
 
     <parent>
         <artifactId>kafka-examples-parent</artifactId>
@@ -95,6 +94,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
+                <!--
                 <version>3.0.0</version>
                 <executions>
                     <execution>
@@ -112,6 +112,7 @@
             	  	</transformers>
                     <finalName>uber-${project.artifactId}-${project.version}</finalName>
                 </configuration>
+              -->
             </plugin>
         </plugins>
         <pluginManagement>

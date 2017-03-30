@@ -14,12 +14,11 @@
 	<modules>
 		<module>AvroConsumerExample</module>
 		<module>AvroProducerExample</module>
-		<!--
-		<module>KafkaStreamsAvg</module>
-	-->
 		<module>MirrorMakerHandler</module>
 		<module>SimpleCounter</module>
 		<module>SimpleMovingAvg</module>
+		<module>FancyMovingAvg</module>
+		<module>KafkaStreamsAvg</module>
 		<module>StreamingAvg</module>
 	</modules>
 
@@ -79,6 +78,32 @@
 				</executions>
 			</plugin>
 		</plugins>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-shade-plugin</artifactId>
+						<version>3.0.0</version>
+						<executions>
+								<execution>
+										<phase>package</phase>
+										<goals>
+												<goal>shade</goal>
+										</goals>
+								</execution>
+						</executions>
+						<configuration>
+							<transformers>
+								<transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+								 <mainClass>com.shapira.examples.consumer.avroclicks.AvroClicksSessionizer</mainClass>
+								</transformer>
+							</transformers>
+								<finalName>uber-${project.artifactId}-${project.version}</finalName>
+						</configuration>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+
 	</build>
 	<dependencyManagement>
 		<dependencies>

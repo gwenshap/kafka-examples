@@ -6,7 +6,6 @@
 
     <groupId>com.shapira.examples.kafka.ConsumerExample</groupId>
     <artifactId>SimpleMovingAvg</artifactId>
-    <version>1.0-SNAPSHOT</version>
 
     <parent>
         <artifactId>kafka-examples-parent</artifactId>
@@ -37,6 +36,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
+                <!--
                 <executions>
                     <execution>
                         <phase>package</phase>
@@ -48,6 +48,7 @@
                 <configuration>
                     <finalName>uber-${artifactId}-${version}</finalName>
                 </configuration>
+              -->
             </plugin>
         </plugins>
     </build>
