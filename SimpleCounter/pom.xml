@@ -4,9 +4,16 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>ProducerExample</groupId>
+
+    <groupId>com.shapira.examples.kafka.ProducerExample</groupId>
     <artifactId>SimpleCounter</artifactId>
-    <version>1.0-SNAPSHOT</version>
+
+    <parent>
+        <artifactId>kafka-examples-parent</artifactId>
+        <groupId>com.shapira.examples.kafka</groupId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
+
     <dependencies>
         <dependency>
             <groupId>org.apache.kafka</groupId>
@@ -25,6 +32,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
+                <!--
                 <executions>
                     <execution>
                         <phase>package</phase>
@@ -36,7 +44,9 @@
                 <configuration>
                     <finalName>uber-${artifactId}-${version}</finalName>
                 </configuration>
+              -->
             </plugin>
+            <!--
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -45,6 +55,7 @@
                     <target>1.6</target>
                 </configuration>
             </plugin>
+          -->
         </plugins>
     </build>
 

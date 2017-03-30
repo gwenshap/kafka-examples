@@ -1,15 +1,19 @@
 package com.shapira.examples.producer.avroclicks;
 
-import JavaSessionize.avro.LogLine;
+import java.util.Properties;
+
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerRecord;
 
+import JavaSessionize.avro.LogLine;
 import java.util.Properties;
 import java.util.Random;
 import java.util.concurrent.ExecutionException;
 
 public class AvroClicksProducer {
+
+	static boolean verbose = Boolean.getBoolean("log.verbose");
 
     public static void main(String[] args) throws ExecutionException, InterruptedException {
         if (args.length != 2) {
@@ -29,20 +33,30 @@ public class AvroClicksProducer {
         props.put("schema.registry.url", schemaUrl);
         // Hard coding topic too.
         String topic = "clicks";
+        
+        System.out.println("Writing topic:" + topic);
+        
 
         Producer<String, LogLine> producer = new KafkaProducer<String, LogLine>(props);
 
-        Random rnd = new Random();
+//      Random rnd = new Random();
         for (long nEvents = 0; nEvents < events; nEvents++) {
             LogLine event = EventGenerator.getNext();
+
+			if (verbose) {
+				System.out.print("/* >> " + nEvents + " >> */ ");
+			}
 
             // Using IP as key, so events from same IP will go to same partition
             ProducerRecord<String, LogLine> record = new ProducerRecord<String, LogLine>(topic, event.getIp().toString(), event);
             producer.send(record).get();
 
-
+			if (verbose) {
+				System.out.println(event.toString());
+			}
 
         }
+        producer.close();
 
     }
 }
