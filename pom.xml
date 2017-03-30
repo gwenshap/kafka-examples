@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>com.shapira.examples.kafka</groupId>
+	<artifactId>kafka-examples-parent</artifactId>
+	<version>1.0-SNAPSHOT</version>
+	<packaging>pom</packaging>
+
+	<name>kafka-examples</name>
+	<description>Kafka Examples</description>
+
+	<modules>
+		<module>AvroConsumerExample</module>
+		<module>AvroProducerExample</module>
+		<module>MirrorMakerHandler</module>
+		<module>SimpleCounter</module>
+		<module>SimpleMovingAvg</module>
+		<module>FancyMovingAvg</module>
+		<module>KafkaStreamsAvg</module>
+		<module>StreamingAvg</module>
+	</modules>
+
+
+
+	<scm>
+		<url>https://github.com/gwenshap/kafka-examples</url>
+		<connection>scm:git:git@github.com:gwenshap/kafka-examples.git</connection>
+		<developerConnection>scm:git:git@github.com:gwenshap/kafka-examples.git</developerConnection>
+	</scm>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<java.version>1.8</java.version>
+		<maven.compiler.source>1.8</maven.compiler.source>
+		<maven.compiler.target>1.8</maven.compiler.target>
+
+		<!--
+        <kafka.version>0.9.0.0</kafka.version>
+        <kafka.scala.version>2.11</kafka.scala.version>
+        <confluent.version>2.0.0</confluent.version>
+        <avro.version>1.7.7</avro.version>
+     -->
+        <kafka.version>0.10.0.1</kafka.version>
+        <kafka.scala.version>2.10</kafka.scala.version>
+        <confluent.version>3.2.0</confluent.version>
+        <avro.version>1.8.1</avro.version>
+
+	</properties>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-enforcer-plugin</artifactId>
+				<version>1.4.1</version>
+				<executions>
+					<execution>
+						<id>enforce-no-snapshots</id>
+						<goals>
+							<goal>enforce</goal>
+						</goals>
+						<configuration>
+							<rules>
+								<requireReleaseDeps>
+									<message>No Snapshots Allowed!</message>
+									<failWhenParentIsSnapshot>false</failWhenParentIsSnapshot>
+									<excludes>
+										<exclude>com.contactlab:contactdata-proxy-api</exclude>
+										<exclude>com.contactlab:contactdata-proxy-resource</exclude>
+									</excludes>
+								</requireReleaseDeps>
+							</rules>
+							<fail>true</fail>
+							<skip>${enforcer.skip}</skip>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-shade-plugin</artifactId>
+						<version>3.0.0</version>
+						<executions>
+								<execution>
+										<phase>package</phase>
+										<goals>
+												<goal>shade</goal>
+										</goals>
+								</execution>
+						</executions>
+						<configuration>
+							<transformers>
+								<transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+								 <mainClass>com.shapira.examples.consumer.avroclicks.AvroClicksSessionizer</mainClass>
+								</transformer>
+							</transformers>
+								<finalName>uber-${project.artifactId}-${project.version}</finalName>
+						</configuration>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+
+	</build>
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>com.fasterxml.jackson.datatype</groupId>
+				<artifactId>jackson-datatype-jdk8</artifactId>
+				<version>2.8.5</version>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+
+
+	<repositories>
+		<repository>
+				<id>apache-repo</id>
+				<name>Apache Repository</name>
+				<url>https://repository.apache.org/content/repositories/releases</url>
+				<releases>
+						<enabled>true</enabled>
+				</releases>
+				<snapshots>
+						<enabled>false</enabled>
+				</snapshots>
+		</repository>
+		<repository>
+				<id>confluent</id>
+				<url>http://packages.confluent.io/maven/</url>
+		</repository>
+		<repository>
+			<id>hortonworks-releases</id>
+			<name>hortonworks-releases</name>
+			<url>http://repo.hortonworks.com/content/groups/public/</url>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</repository>
+	</repositories>
+
+	<pluginRepositories>
+	</pluginRepositories>
+
+	<distributionManagement>
+	</distributionManagement>
+
+</project>
