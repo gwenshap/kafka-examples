@@ -15,10 +15,36 @@ base: https://github.com/gwenshap/kafka-examples
 
 
 
-* AvroConsumerExample
-* AvroProducerExample
-* KafkaStreamsAvg
-* MirrorMakerHandler
-* SimpleCounter
-* SimpleMovingAvg
-* StreamingAvg
+
+Clients
+-------
+
+* [SimpleCounter](SimpleCounter)
+* [SimpleMovingAvg](SimpleMovingAvg)
+
+Balancing/Mirroring
+-------------------
+
+* [FancyMovingAvg](FancyMovingAvg)
+* [MirrorMakerHandler](MirrorMakerHandler)
+
+
+AVRO Schema Registry
+--------------------
+
+* [AvroConsumerExample](AvroConsumerExample)
+* [AvroProducerExample](AvroProducerExample)
+
+
+Streams
+-------
+
+* [KafkaStreamsAvg](KafkaStreamsAvg)
+* [SparkStreamingAvg](StreamingAvg) (1)
+
+
+
+*note*
+1. spark 1.2, kafka 0.8
+
+
