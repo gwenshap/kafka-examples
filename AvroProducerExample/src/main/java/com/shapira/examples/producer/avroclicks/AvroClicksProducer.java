@@ -7,10 +7,11 @@ import org.apache.kafka.clients.producer.ProducerRecord;
 
 import java.util.Properties;
 import java.util.Random;
+import java.util.concurrent.ExecutionException;
 
 public class AvroClicksProducer {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws ExecutionException, InterruptedException {
         if (args.length != 2) {
             System.out.println("Please provide command line arguments: numEvents schemaRegistryUrl");
             System.exit(-1);
@@ -37,7 +38,7 @@ public class AvroClicksProducer {
 
             // Using IP as key, so events from same IP will go to same partition
             ProducerRecord<String, LogLine> record = new ProducerRecord<String, LogLine>(topic, event.getIp().toString(), event);
-            producer.send(record);
+            producer.send(record).get();
 
 
 
