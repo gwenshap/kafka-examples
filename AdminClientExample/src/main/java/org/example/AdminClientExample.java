@@ -55,7 +55,8 @@ public class AdminClientExample {
         // initialize admin client
         Properties props = new Properties();
         props.put(AdminClientConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
-        props.put(AdminClientConfig.REQUEST_TIMEOUT_MS_CONFIG, 30000);
+        props.put(AdminClientConfig.REQUEST_TIMEOUT_MS_CONFIG, 1000);
+        props.put(AdminClientConfig.DEFAULT_API_TIMEOUT_MS_CONFIG, 1000);
         AdminClient admin = AdminClient.create(props);
         TopicDescription topicDescription;
 
