@@ -39,18 +39,23 @@ public class AdminRestServer {
             String timeout = request.getParam("timeout");
             int timeoutMs = NumberUtils.toInt(timeout, 1000);
 
-            DescribeTopicsResult demoTopic = admin.describeTopics(Collections.singletonList(topic), new DescribeTopicsOptions().timeoutMs(timeoutMs));
-            demoTopic.values().get(topic).whenComplete((new KafkaFuture.BiConsumer<TopicDescription, Throwable>() {
-                @Override
-                public void accept(final TopicDescription topicDescription, final Throwable throwable) {
-                    if (throwable != null) {
-                        System.out.println("got exception");
-                        request.response().end("Error trying to describe topic " + topic + " due to " + throwable.getMessage());
-                    } else {
-                        request.response().end(topicDescription.toString());
-                    }
-                }
-            }));
+            DescribeTopicsResult demoTopic = admin.describeTopics(
+                    Collections.singletonList(topic),
+                    new DescribeTopicsOptions().timeoutMs(timeoutMs));
+            demoTopic.values().get(topic).whenComplete(
+                    new KafkaFuture.BiConsumer<TopicDescription, Throwable>() {
+                        @Override
+                        public void accept(final TopicDescription topicDescription,
+                                           final Throwable throwable) {
+                            if (throwable != null) {
+                                System.out.println("got exception");
+                                request.response().end("Error trying to describe topic "
+                                        + topic + " due to " + throwable.getMessage());
+                            } else {
+                                request.response().end(topicDescription.toString());
+                            }
+                        }
+                    });
         }).listen(8080);
     }
 }

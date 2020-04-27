@@ -31,14 +31,17 @@ import org.apache.kafka.common.errors.UnknownTopicOrPartitionException;
 import org.joda.time.DateTime;
 
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Properties;
+import java.util.Set;
 import java.util.concurrent.ExecutionException;
 
 public class AdminClientExample {
@@ -71,7 +74,7 @@ public class AdminClientExample {
             System.out.println("Description of demo topic:" + topicDescription);
 
             if (topicDescription.partitions().size() != NUM_PARTITIONS) {
-                System.out.println("Topic has wrong number of partitions. Exiting.");
+                System.out.println("Topic has wrong number of partitions.");
                 //System.exit(-1);
             }
         } catch (ExecutionException e) {
@@ -82,10 +85,12 @@ public class AdminClientExample {
             }
 
             // if we are here, topic doesn't exist
-            System.out.println("Topic " + TOPIC_NAME + " does not exist. Going to create it now");
+            System.out.println("Topic " + TOPIC_NAME +
+                    " does not exist. Going to create it now");
             // Note that number of partitions and replicas are optional. If there are
             // not specified, the defaults configured on the Kafka brokers will be used
-            CreateTopicsResult newTopic = admin.createTopics(Collections.singletonList(new NewTopic(TOPIC_NAME, NUM_PARTITIONS, REP_FACTOR)));
+            CreateTopicsResult newTopic = admin.createTopics(Collections.singletonList(
+                    new NewTopic(TOPIC_NAME, NUM_PARTITIONS, REP_FACTOR)));
 
             // uncomment to see the topic get created with wrong number of partitions
             //CreateTopicsResult newTopic = admin.createTopics(Collections.singletonList(new NewTopic(TOPIC_NAME, Optional.empty(), Optional.empty())));
@@ -98,23 +103,27 @@ public class AdminClientExample {
         }
 
         // Make the topic compacted
-        ConfigResource configResource = new ConfigResource(ConfigResource.Type.TOPIC,TOPIC_NAME);
-        DescribeConfigsResult configsResult = admin.describeConfigs(Collections.singleton(configResource));
+        ConfigResource configResource =
+                new ConfigResource(ConfigResource.Type.TOPIC,TOPIC_NAME);
+        DescribeConfigsResult configsResult =
+                admin.describeConfigs(Collections.singleton(configResource));
         Config configs = configsResult.all().get().get(configResource);
 
         // print non-default configs
-        configs.entries().stream().filter(entry -> !entry.isDefault()).forEach(System.out::println);
+        configs.entries().stream().filter(
+                entry -> !entry.isDefault()).forEach(System.out::println);
 
 
         // Check if topic is compacted
-        ConfigEntry compaction = new ConfigEntry(TopicConfig.CLEANUP_POLICY_CONFIG, TopicConfig.CLEANUP_POLICY_COMPACT);
+        ConfigEntry compaction = new ConfigEntry(TopicConfig.CLEANUP_POLICY_CONFIG,
+                TopicConfig.CLEANUP_POLICY_COMPACT);
         if (! configs.entries().contains(compaction)) {
             // if topic is not compacted, compact it
-            Map<ConfigResource, Collection<AlterConfigOp>> alterConfigs =
-                    Collections.singletonMap(
-                            configResource,
-                            Collections.singleton(new AlterConfigOp(compaction, AlterConfigOp.OpType.SET))
-                    );
+
+            Collection<AlterConfigOp> configOp = new ArrayList<AlterConfigOp>();
+            configOp.add(new AlterConfigOp(compaction, AlterConfigOp.OpType.SET));
+            Map<ConfigResource, Collection<AlterConfigOp>> alterConfigs = new HashMap<>();
+            alterConfigs.put(configResource, configOp);
             admin.incrementalAlterConfigs(alterConfigs).all().get();
         } else {
             System.out.println("Topic " + TOPIC_NAME + " is compacted topic");
@@ -138,13 +147,16 @@ public class AdminClientExample {
         admin.listConsumerGroups().valid().get().forEach(System.out::println);
 
         // Describe a group
-        ConsumerGroupDescription groupDescription = admin.describeConsumerGroups(CONSUMER_GRP_LIST)
+        ConsumerGroupDescription groupDescription = admin
+                .describeConsumerGroups(CONSUMER_GRP_LIST)
                 .describedGroups().get(CONSUMER_GROUP).get();
-        System.out.println("Description of group " + CONSUMER_GROUP + ":" + groupDescription);
+        System.out.println("Description of group " + CONSUMER_GROUP
+                + ":" + groupDescription);
 
         // Get offsets committed by the group
-        Map<TopicPartition, OffsetAndMetadata> partitionOffsets =
-                admin.listConsumerGroupOffsets(CONSUMER_GROUP).partitionsToOffsetAndMetadata().get();
+        Map<TopicPartition, OffsetAndMetadata> offsets =
+                admin.listConsumerGroupOffsets(CONSUMER_GROUP)
+                        .partitionsToOffsetAndMetadata().get();
 
         Map<TopicPartition, OffsetSpec> requestLatestOffsets = new HashMap<>();
         Map<TopicPartition, OffsetSpec> requestEarliestOffsets = new HashMap<>();
@@ -153,29 +165,36 @@ public class AdminClientExample {
         // For all topics and partitions that have offsets committed by the group, get their latest offsets, earliest offsets
         // and the offset for 2h ago. Note that I'm populating the request for 2h old offsets, but not using them.
         // You can swap the use of "Earliest" in the `alterConsumerGroupOffset` example with the offsets from 2h ago
-        for(TopicPartition tp: partitionOffsets.keySet()) {
+        for(TopicPartition tp: offsets.keySet()) {
             requestLatestOffsets.put(tp, OffsetSpec.latest());
             requestEarliestOffsets.put(tp, OffsetSpec.earliest());
             requestOlderOffsets.put(tp, OffsetSpec.forTimestamp(resetTo.getMillis()));
         }
 
-        Map<TopicPartition, ListOffsetsResult.ListOffsetsResultInfo> latestOffsets = admin.listOffsets(requestLatestOffsets).all().get();
+        Map<TopicPartition, ListOffsetsResult.ListOffsetsResultInfo> latestOffsets =
+                admin.listOffsets(requestLatestOffsets).all().get();
 
-        for (Map.Entry<TopicPartition, OffsetAndMetadata> e: partitionOffsets.entrySet()) {
+        for (Map.Entry<TopicPartition, OffsetAndMetadata> e: offsets.entrySet()) {
             String topic = e.getKey().topic();
             int partition =  e.getKey().partition();
             long committedOffset = e.getValue().offset();
             long latestOffset = latestOffsets.get(e.getKey()).offset();
 
-            System.out.println("Consumer group " + CONSUMER_GROUP +" has committed offset " + committedOffset +
-                   " to topic " + topic + " partition " + partition + ". The latest offset in the partition is "
-                    +  latestOffset + " so consumer group is " + (latestOffset - committedOffset) + " records behind");
+            System.out.println("Consumer group " + CONSUMER_GROUP
+                    + " has committed offset " + committedOffset
+                    + " to topic " + topic + " partition " + partition
+                    + ". The latest offset in the partition is "
+                    +  latestOffset + " so consumer group is "
+                    + (latestOffset - committedOffset) + " records behind");
         }
 
         // Reset offsets to beginning of topic. You can try to reset to 2h ago too by using `requestOlderOffsets`
-        Map<TopicPartition, ListOffsetsResult.ListOffsetsResultInfo> earliestOffsets = admin.listOffsets(requestEarliestOffsets).all().get();
+        Map<TopicPartition, ListOffsetsResult.ListOffsetsResultInfo> earliestOffsets =
+                admin.listOffsets(requestEarliestOffsets).all().get();
+
         Map<TopicPartition, OffsetAndMetadata> resetOffsets = new HashMap<>();
-        for (Map.Entry<TopicPartition, ListOffsetsResult.ListOffsetsResultInfo> e: earliestOffsets.entrySet()) {
+        for (Map.Entry<TopicPartition, ListOffsetsResult.ListOffsetsResultInfo> e:
+                earliestOffsets.entrySet()) {
             System.out.println("Will reset topic-partition " + e.getKey() + " to offset " + e.getValue().offset());
             resetOffsets.put(e.getKey(), new OffsetAndMetadata(e.getValue().offset()));
         }
@@ -209,14 +228,18 @@ public class AdminClientExample {
         }
 
         // delete records
-        Map<TopicPartition, ListOffsetsResult.ListOffsetsResultInfo> olderOffsets = admin.listOffsets(requestOlderOffsets).all().get();
+        Map<TopicPartition, ListOffsetsResult.ListOffsetsResultInfo> olderOffsets =
+                admin.listOffsets(requestOlderOffsets).all().get();
         Map<TopicPartition, RecordsToDelete> recordsToDelete = new HashMap<>();
-        for (Map.Entry<TopicPartition, ListOffsetsResult.ListOffsetsResultInfo>  e: olderOffsets.entrySet())
+        for (Map.Entry<TopicPartition, ListOffsetsResult.ListOffsetsResultInfo>  e:
+                olderOffsets.entrySet())
             recordsToDelete.put(e.getKey(), RecordsToDelete.beforeOffset(e.getValue().offset()));
         admin.deleteRecords(recordsToDelete).all().get();
 
+        Set<TopicPartition> electableTopics = new HashSet<>();
+        electableTopics.add(new TopicPartition(TOPIC_NAME, 0));
         try {
-            admin.electLeaders(ElectionType.PREFERRED, Collections.singleton(new TopicPartition(TOPIC_NAME, 0))).all().get();
+            admin.electLeaders(ElectionType.PREFERRED, electableTopics).all().get();
         } catch (ExecutionException e) {
             if (e.getCause() instanceof ElectionNotNeededException) {
                 System.out.println("All leaders are preferred leaders, no need to do anything");
@@ -225,10 +248,14 @@ public class AdminClientExample {
 
         // reassign partitions to new broker
         Map<TopicPartition, Optional<NewPartitionReassignment>> reassignment = new HashMap<>();
-        reassignment.put(new TopicPartition(TOPIC_NAME, 0), Optional.of(new NewPartitionReassignment(Arrays.asList(0,1))));
-        reassignment.put(new TopicPartition(TOPIC_NAME, 1), Optional.of(new NewPartitionReassignment(Arrays.asList(0))));
-        reassignment.put(new TopicPartition(TOPIC_NAME, 2), Optional.of(new NewPartitionReassignment(Arrays.asList(1,0))));
-        reassignment.put(new TopicPartition(TOPIC_NAME, 3), Optional.empty());
+        reassignment.put(new TopicPartition(TOPIC_NAME, 0),
+                Optional.of(new NewPartitionReassignment(Arrays.asList(0,1))));
+        reassignment.put(new TopicPartition(TOPIC_NAME, 1),
+                Optional.of(new NewPartitionReassignment(Arrays.asList(0))));
+        reassignment.put(new TopicPartition(TOPIC_NAME, 2),
+                Optional.of(new NewPartitionReassignment(Arrays.asList(1,0))));
+        reassignment.put(new TopicPartition(TOPIC_NAME, 3),
+                Optional.empty());
         try {
             admin.alterPartitionReassignments(reassignment).all().get();
         } catch (ExecutionException e) {
@@ -237,7 +264,8 @@ public class AdminClientExample {
             }
         }
 
-        System.out.println("currently reassigning: " + admin.listPartitionReassignments().reassignments().get());
+        System.out.println("currently reassigning: " +
+                admin.listPartitionReassignments().reassignments().get());
         demoTopic = admin.describeTopics(TOPIC_LIST);
         topicDescription = demoTopic.values().get(TOPIC_NAME).get();
         System.out.println("Description of demo topic:" + topicDescription);
